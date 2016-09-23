@@ -1,0 +1,5 @@
+git add .
+git status
+$date = date
+git commit -m "Commit of $date"
+git push -u origin master
