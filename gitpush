@@ -1,0 +1,5 @@
+git add .
+git status
+$adfsa=date
+git commit -m "Commit of $adfsa"
+git push -u origin master
