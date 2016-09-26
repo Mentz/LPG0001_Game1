@@ -68,6 +68,7 @@ void printTable(char **mapa, int size){
 	for(i = 0; i <= size*2; i++){
 		printf("‾");
 	}
+	printf("\n");
 }
 
 int paintTable(char **mapa, int x, int y, int player, int size, int *CC){
@@ -116,18 +117,18 @@ char playGame(char *player1, char *player2, char **mapa, int size) {
 				printf("%s (B) venceu o jogo!\n", player2);
 			printf("Iniciar uma nova partida? [S/N]\n");
 			
-			char aux;
-			while (aux != 'S' || aux != 'N') {
+			char aux = 'a';
+			while (aux != 'S' && aux != 'N') {
 				getchar();
 				scanf("%c", &aux);
 				aux += (aux == 'n' || aux == 's')?'A'-'a':0;
-				if (aux != 'N' || aux != 'S')
+				if (aux != 'N' && aux != 'S')
 					printf("Escolha inválida.\nIniciar uma nova partida? [S/N]\n");
 			}
+			clearScreen();
 			return aux;
 		}
 		i = !i;
-
 		clearScreen();
 	}
 }
