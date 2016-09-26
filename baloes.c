@@ -64,7 +64,7 @@ void printTable(char **mapa, int size){
 		}
 		printf(" |\n");
 	}
-	if(size >= 10) printf("    "); else printf("   ");
+	printf("%s",(size >= 10) ? "    ":"   ");
 	for(i = 0; i <= size*2; i++){
 		printf("‾");
 	}
@@ -74,23 +74,33 @@ void printTable(char **mapa, int size){
 void paintTable(char **mapa, int x, int y, int player, int size, int *CC){
 	if (x >= size || y >= size || x < 0 || y < 0) {} else {
 		srand(time(NULL));
-		int larg = (size>4) ? 1+(rand()%((int)(size*0.20))) : 0;
-		int i , j, posx = x-larg, posy = y-larg, cont = 0;
-
-		for(i = posy; i <= y+larg; i++){
-			for(j = posx; j <= x+larg; j++){
-				if(i >= 0 && j >= 0 && i < size && j < size){
-					cont++;
-					
-					if(mapa[i][j] == '.')
-						*(CC) += 1;
-
-					if(player)
-						mapa[i][j] = 'B';
-					else
-						mapa[i][j] = 'A';
+		int area = 1+(rand()%((int)((size*size)*0.2)));
+		int i, posx = x, posy = y, dirx = rand()%2, diry = rand()%2, cont = 1; //diry(0 pra cima, 1 pra baixo), dirx(0 pra direita, 1 pra esquerda)
+		if(mapa[posy][posx]=='.') *CC += 1;
+		mapa[posy][posx] = (!player) ? 'A' : 'B';
+		area--;
+		while (area > 0) {
+			i = cont;
+			while (i-- > 0 && area) {
+				posy += (diry) ? 1 : -1;
+				if (posy >= 0 && posy < size && posx >= 0 && posx < size) {
+					if(mapa[posy][posx]=='.') *CC += 1;
+					mapa[posy][posx] = (!player) ? 'A' : 'B';
 				}
+				area--;
 			}
+			diry = !diry;
+			i = cont;
+			while (i-- > 0 && area) {
+				posx += (dirx) ? 1 : -1;
+				if (posy >= 0 && posy < size && posx >= 0 && posx < size) {
+					if(mapa[posy][posx]=='.') *CC += 1;
+					mapa[posy][posx] = (!player) ? 'A' : 'B';
+				}
+				area--;
+			}
+			dirx = !dirx;
+			cont++;
 		}
 	}
 }
@@ -106,7 +116,7 @@ char playGame(char *player1, char *player2, char **mapa, int size) {
 		int x, y;
 		scanf("%d %d", &y, &x);
 		x--; y--;
-		paintTable(mapa, x, y, i%2, size, &CC);
+		paintTable(mapa, x, y, i, size, &CC);
 			
 		if(CC == area){
 
