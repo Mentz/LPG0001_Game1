@@ -32,7 +32,7 @@ void clearTable(char **mapa, int size){
 	int i, j;
 	for(i = 0; i < size; i++){
 		for(j = 0; j < size; j++){
-			mapa[i][j] = '#';
+			mapa[i][j] = '.';
 		}
 	}
 }
@@ -40,52 +40,48 @@ void clearTable(char **mapa, int size){
 void printTable(char **mapa, int size){
 	int i, j;
 
-	printf("  ");
-	if(size >= 10)
-		printf(" ");
-	for(i = 0; i < size; i++){
-		if(i != 0 && size >= 10){
-			if(i <= 9)
-				printf("  ");
-			else
-				printf(" ");
-		}else{
-			printf(" ");
+	if(size >= 10) {
+		printf("    ");
+		for(i = 0; i < size; i++){
+			if((i+1)/10 < 1) printf("  "); else printf(" %d", (i+1)/10);
 		}
-		printf("%d", i);
+		printf("\n ");
+	}
+	printf("   ");
+	for(i = 0; i < size; i++){
+		printf(" %d", (i+1)%10);
 	}
 	printf("\n");
-
+	if(size >= 10) printf("    "); else printf("  ");
+	for(i = 0; i <= size*2; i++){
+		printf("_");
+	}
+	printf("\n");
 	for(i = 0; i < size; i++){
+		if(size > 9) printf("%-2d |",i+1); else printf("%-1d | ",i+1);
 		for(j = 0; j < size; j++){
-			if(j == 0){
-				if(i <= 9 && size >= 10)
-					printf(" ");
-				printf("%d ", i);
-
-			}
-			if(j != 0 && size >= 10){
-				printf("  ");
-			}else
-				printf(" ");
-
-			printf("%c", mapa[i][j]);
+			printf(" %c", mapa[i][j]);
 		}
-		printf("\n");
+		printf(" |\n");
+	}
+	if(size >= 10) printf("    "); else printf("   ");
+	for(i = 0; i <= size*2; i++){
+		printf("‾");
 	}
 }
 
 int paintTable(char **mapa, int x, int y, int player, int size, int *CC){
+	if (x >= size || y >= size || x < 0 || y < 0) return 0;
 	srand(time(NULL));
-	int larg = 1+(rand()%((int)(size*0.20))), i , j;
-	int posx = x-larg, posy = y-larg, cont = 0;
+	int larg = (size>4) ? 1+(rand()%((int)(size*0.20))) : 0;
+	int i , j, posx = x-larg, posy = y-larg, cont = 0;
 
-	for(i = posy; i <= x+larg; i++){
-		for(j = posx; j <= y+larg; j++){
+	for(i = posy; i <= y+larg; i++){
+		for(j = posx; j <= x+larg; j++){
 			if(i >= 0 && j >= 0 && i < size && j < size){
 				cont++;
 				
-				if(mapa[i][j] == '#')
+				if(mapa[i][j] == '.')
 					*(CC) += 1;
 
 				if(player)
@@ -98,37 +94,39 @@ int paintTable(char **mapa, int x, int y, int player, int size, int *CC){
 }
 
 char playGame(char *player1, char *player2, char **mapa, int size) {
-	int i, CC = 0;
-	for (i = 2 ;; i++) {
-		printf("Vez de ");
-		if(i%2 == 0)
-			printf("%s (A) ", player1);
-		else
-			printf("%s (B) ", player2);
-		printf("jogar\n");
+	int i = 0, CC = 0, area = size*size;
+	while (1) {
+		printf("Vez de %s (tinta %s) jogar\n\n",(!i)?player1:player2,(!i)?"(A)":"(B)");
 
 		printTable(mapa, size);
-		printf("%d\n", CC);
-		printf("Posição X e Y do arremesso\n");
+		printf("\nPosições vazias: %d\n", area-CC);
+		printf("Linha e Coluna do arremesso\n");
 		int x, y;
-		scanf("%d %d", &x, &y);
+		scanf("%d %d", &y, &x);
+		x--; y--;
 		paintTable(mapa, x, y, i%2, size, &CC);
 			
-		if(CC == size*size){
+		if(CC == area){
+
 			clearScreen();
 			printTable(mapa, size);
-
-			if(i%2 == 0)
+			if(!i)
 				printf("%s (A) venceu o jogo!\n", player1);
 			else
 				printf("%s (B) venceu o jogo!\n", player2);
-			
 			printf("Iniciar uma nova partida? [S/N]\n");
+			
 			char aux;
-			getchar();
-			scanf("%c", &aux);
+			while (aux != 'S' || aux != 'N') {
+				getchar();
+				scanf("%c", &aux);
+				aux += (aux == 'n' || aux == 's')?'A'-'a':0;
+				if (aux != 'N' || aux != 'S')
+					printf("Escolha inválida.\nIniciar uma nova partida? [S/N]\n");
+			}
 			return aux;
 		}
+		i = !i;
 
 		clearScreen();
 	}
