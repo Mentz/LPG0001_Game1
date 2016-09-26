@@ -1,14 +1,27 @@
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 #include "baloes.h"
 
 int main(void) {
-	int n = 1;
+	clearScreen();
+	int n = 1, i;
 	char player[2][50];
-	initialize();
-	getPlayerNames(player[0], player[1]);
-	while (n != 0) {
+
+	while (1) {
+		initialize();
+		getPlayerNames(player[0], player[1]);
 		n = getWallSize();
-		playGame(n);
+
+		char** mapa;
+		mapa = malloc(n * sizeof * mapa);
+  		for (i = 0; i < n; i++)
+    		mapa[i] = malloc(n * sizeof * mapa[i]);
+		clearTable(mapa, n);
+		clearScreen();
+
+		if(playGame(player[0], player[1], mapa, n) == 'N')
+			break;
 		clearScreen();
 	}
 
