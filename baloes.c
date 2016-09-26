@@ -23,6 +23,7 @@ int getWallSize() {
 	scanf("%d",&x);
 	while ( x < 4 || x > 50) {
 		printf("Número inválido!\n");
+		printf("Tamanho da parede [4...50]\n");
 		scanf("%d",&x);
 	}
 	return x;
@@ -74,7 +75,7 @@ void printTable(char **mapa, int size){
 void paintTable(char **mapa, int x, int y, int player, int size, int *CC){
 	if (x >= size || y >= size || x < 0 || y < 0) {} else {
 		srand(time(NULL));
-		int area = 1+(rand()%((int)((size*size)*0.2)));
+		int area = 1+(rand()%((size*size)/5));
 		int i, posx = x, posy = y, dirx = rand()%2, diry = rand()%2, cont = 1; //diry(0 pra cima, 1 pra baixo), dirx(0 pra direita, 1 pra esquerda)
 		if(mapa[posy][posx]=='.') *CC += 1;
 		mapa[posy][posx] = (!player) ? 'A' : 'B';
