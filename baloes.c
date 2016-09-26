@@ -52,13 +52,13 @@ void printTable(char **mapa, int size){
 		printf(" %d", (i+1)%10);
 	}
 	printf("\n");
-	if(size >= 10) printf("    "); else printf("  ");
+	if(size >= 10) printf("    "); else printf("   ");
 	for(i = 0; i <= size*2; i++){
 		printf("_");
 	}
 	printf("\n");
 	for(i = 0; i < size; i++){
-		if(size > 9) printf("%-2d |",i+1); else printf("%-1d | ",i+1);
+		if(size > 9) printf("%-2d |",i+1); else printf("%-1d |",i+1);
 		for(j = 0; j < size; j++){
 			printf(" %c", mapa[i][j]);
 		}
@@ -71,24 +71,25 @@ void printTable(char **mapa, int size){
 	printf("\n");
 }
 
-int paintTable(char **mapa, int x, int y, int player, int size, int *CC){
-	if (x >= size || y >= size || x < 0 || y < 0) return 0;
-	srand(time(NULL));
-	int larg = (size>4) ? 1+(rand()%((int)(size*0.20))) : 0;
-	int i , j, posx = x-larg, posy = y-larg, cont = 0;
+void paintTable(char **mapa, int x, int y, int player, int size, int *CC){
+	if (x >= size || y >= size || x < 0 || y < 0) {} else {
+		srand(time(NULL));
+		int larg = (size>4) ? 1+(rand()%((int)(size*0.20))) : 0;
+		int i , j, posx = x-larg, posy = y-larg, cont = 0;
 
-	for(i = posy; i <= y+larg; i++){
-		for(j = posx; j <= x+larg; j++){
-			if(i >= 0 && j >= 0 && i < size && j < size){
-				cont++;
-				
-				if(mapa[i][j] == '.')
-					*(CC) += 1;
+		for(i = posy; i <= y+larg; i++){
+			for(j = posx; j <= x+larg; j++){
+				if(i >= 0 && j >= 0 && i < size && j < size){
+					cont++;
+					
+					if(mapa[i][j] == '.')
+						*(CC) += 1;
 
-				if(player)
-					mapa[i][j] = 'B';
-				else
-					mapa[i][j] = 'A';
+					if(player)
+						mapa[i][j] = 'B';
+					else
+						mapa[i][j] = 'A';
+				}
 			}
 		}
 	}
@@ -97,7 +98,7 @@ int paintTable(char **mapa, int x, int y, int player, int size, int *CC){
 char playGame(char *player1, char *player2, char **mapa, int size) {
 	int i = 0, CC = 0, area = size*size;
 	while (1) {
-		printf("Vez de %s (tinta %s) jogar\n\n",(!i)?player1:player2,(!i)?"(A)":"(B)");
+		printf("Vez de %s (tinta %s) jogar\n\n",(!i)?player1:player2,(!i)?"A":"B");
 
 		printTable(mapa, size);
 		printf("\nPosições vazias: %d\n", area-CC);
